@@ -59,8 +59,15 @@ public:
 
 class Puzzle{
     Cell field[ROWS][COLS];
-    bool search_for_element(int row, int col){
-        for(int i=col;i>0;i--){
+    void search_for_element(int row=0, int col=0){
+        char target = field[row][col].get_char();
+        for(int i = 0; i < COLS; i++){
+            if(field[row][i].get_char() == target && !field[row][col].ismarked() && i != col)
+                field[row][col].mark();
+        }
+        for(int i = 0; i < ROWS; i++){
+            if(field[i][col].get_char() == target && !field[row][col].ismarked() && i != row)
+                field[row][col].mark();
         }
     }
 public:
@@ -78,9 +85,9 @@ public:
         }
     }
     void solve(){
-        for(int i=0;i<ROWS;i++){
-            for(int j=0;j<COLS;j++){
-                field[i][j].mark();
+        for(int i = 0; i < ROWS; i++){
+            for(int j = 0; j < COLS; j++){
+                search_for_element(i, j);
             }
         }
     }
