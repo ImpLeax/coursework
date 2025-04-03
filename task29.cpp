@@ -8,105 +8,153 @@ using namespace std;
 #define ROWS 10
 #define COLS 10
 
-class Cell{
+class cell{
     char value[4];
     bool marked;
 public:
-    Cell(){
-        strcpy(value, " 0 \0");
-        marked = false;
-    }
+    cell();
 
-    void set_char(char c){
-        if(c<65 || c>90)return;
-        value[1] = c;
-    }
-    void set_random(){
-        value[1] = 'A' + rand() % 26;
-    }
+    void set_char(char c);
+    void set_random();
 
-    void mark(){
-        if(!marked){
-            value[0] = '(';
-            value[2] = ')';
-            marked = true;
-        }
-        else{
-            value[0] = ' ';
-            value[2] = ' ';
-            marked = false;
-        }
-    }
+    void mark();
 
-    bool ismarked(){
-        return marked;
-    }
+    bool ismarked();
 
-    char *get_value(){
-        char *tmp = new char[4];
-        strcpy(tmp, value);
-        return tmp;
-    }
+    char *get_value();
 
-    char get_char(){
-        return value[1];
-    }
+    char get_char();
 
-    void show(){
-        cout << " " << value << " ";
-    }
+    void show();
 };
 
-class Puzzle{
-    Cell field[ROWS][COLS];
-    void search_for_element(int row=0, int col=0){
-        char target = field[row][col].get_char();
-        for(int i = 0; i < COLS; i++){
-            if(field[row][i].get_char() == target && !field[row][col].ismarked() && i != col)
-                field[row][col].mark();
-        }
-        for(int i = 0; i < ROWS; i++){
-            if(field[i][col].get_char() == target && !field[row][col].ismarked() && i != row)
-                field[row][col].mark();
-        }
+cell::cell(){
+    strcpy(value, " 0 \0");
+    marked = false;
+}
+
+void cell::set_char(char c){
+    if(c<65 || c>90)return;
+    value[1] = c;
+}
+void cell::set_random(){
+    value[1] = 'A' + rand() % 26;
+}
+
+void cell::mark(){
+    if(!marked){
+        value[0] = '(';
+        value[2] = ')';
+        marked = true;
     }
+    else{
+        value[0] = ' ';
+        value[2] = ' ';
+        marked = false;
+    }
+}
+
+bool cell::ismarked(){
+    return marked;
+}
+
+char* cell::get_value(){
+    char *tmp = new char[4];
+    strcpy(tmp, value);
+    return tmp;
+}
+
+char cell::get_char(){
+    return value[1];
+}
+
+void cell::show(){
+    cout << " " << value << " ";
+}
+
+class puzzle{
+    cell field[ROWS][COLS];
+    void search_for_element(int row, int col);
+    bool checker(int row, int col);
 public:
-    Puzzle(){
-        cout << "Construct empty puzzle" << endl;  
+
+    puzzle();
+    ~puzzle();
+
+    void generate();
+
+    void solve();
+
+    void show();
+
+};
+
+puzzle::puzzle(){
+    cout << "Construct empty puzzle" << endl;  
+}
+
+puzzle::~puzzle(){
+    cout << "Destructing puzzle" << endl;
+}
+
+bool puzzle::checker(int row, int col){
+    if(row>0 && field[row-1][col].ismarked())return true;
+    if(row<ROWS && field[row+1][col].ismarked())return true;
+    if(col>0 && field[row][col-1].ismarked())return true;
+    if(col<COLS && field[row][col+1].ismarked())return true;
+    return false;
+}
+
+void puzzle::search_for_element(int row, int col){
+    char target = field[row][col].get_char();
+    for(int i = 0; i < COLS; i++){
+        if(field[row][i].get_char() == target && !field[row][col].ismarked() && !field[row][i].ismarked() && i != col){
+            if(!checker(row, col))field[row][col].mark();
+            else{
+                if(!checker(row, i))field[row][i].mark();
+            }
+        }    
     }
-    ~Puzzle(){
-        cout << "Destructing puzzle" << endl;
-    }
-    void generate(){
-        for(int i=0;i<ROWS;i++){
-            for(int j=0;j<COLS;j++){
-                field[i][j].set_random();
+    for(int i = 0; i < ROWS; i++){
+        if(field[i][col].get_char() == target && !field[row][col].ismarked() && !field[i][col].ismarked() && i != row){
+            if(!checker(row, col))field[row][col].mark();
+            else{
+                if(!checker(i, col))field[i][col].mark();
             }
         }
     }
-    void solve(){
-        for(int i = 0; i < ROWS; i++){
-            for(int j = 0; j < COLS; j++){
-                search_for_element(i, j);
-            }
+}
+
+void puzzle::generate(){
+    for(int i=0;i<ROWS;i++){
+        for(int j=0;j<COLS;j++){
+            field[i][j].set_random();
         }
     }
-    void show(){
-        for(int i=0;i<ROWS;i++){   
-            for(int j=0;j<COLS;j++){
-                field[i][j].show();
-            }
-            cout << endl;
+}
+
+void puzzle::solve(){
+    for(int i = 0; i < ROWS; i++){
+        for(int j = 0; j < COLS; j++){
+            search_for_element(i, j);
+        }
+    }
+}
+
+void puzzle::show(){
+    for(int i=0;i<ROWS;i++){   
+        for(int j=0;j<COLS;j++){
+            field[i][j].show();
         }
         cout << endl;
     }
-
-};
+    cout << endl;
+}
 
 int main(){
     srand(time(0));
 
-    Puzzle game;
+    puzzle game;
     game.show();
     game.generate();
     game.show();
