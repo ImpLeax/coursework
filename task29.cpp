@@ -76,6 +76,9 @@ class puzzle{
     cell field[ROWS][COLS];
     void search_for_element(int row, int col);
     bool checker(int row, int col);
+    int freecounter(int row, int col);
+    bool isfree(int row, int col);
+
 public:
 
     puzzle();
@@ -97,11 +100,28 @@ puzzle::~puzzle(){
     cout << "Destructing puzzle" << endl;
 }
 
+bool puzzle::isfree(int row, int col){
+    if(row>0 && freecounter(row-1, col)<2)return false;
+    if(row<ROWS-1 && freecounter(row+1, col)<2)return false;
+    if(col>0 && freecounter(row, col-1)<2)return false;
+    if(col<COLS-1 && freecounter(row, col+1)<2)return false;
+    return true;
+}
+
+int puzzle::freecounter(int row, int col){
+    int counter=0;
+    if(row>0 && !field[row-1][col].ismarked())counter++;
+    if(row<ROWS-1 && !field[row+1][col].ismarked())counter++;
+    if(col>0 && !field[row][col-1].ismarked())counter++;
+    if(col<COLS-1 && !field[row][col+1].ismarked())counter++;
+    return counter;
+}
+
 bool puzzle::checker(int row, int col){
     if(row>0 && field[row-1][col].ismarked())return true;
-    if(row<ROWS && field[row+1][col].ismarked())return true;
+    if(row<ROWS-1 && field[row+1][col].ismarked())return true;
     if(col>0 && field[row][col-1].ismarked())return true;
-    if(col<COLS && field[row][col+1].ismarked())return true;
+    if(col<COLS-1 && field[row][col+1].ismarked())return true;
     return false;
 }
 
@@ -109,17 +129,17 @@ void puzzle::search_for_element(int row, int col){
     char target = field[row][col].get_char();
     for(int i = 0; i < COLS; i++){
         if(field[row][i].get_char() == target && !field[row][col].ismarked() && !field[row][i].ismarked() && i != col){
-            if(!checker(row, col))field[row][col].mark();
+            if(!checker(row, col) && isfree(row, col))field[row][col].mark();
             else{
-                if(!checker(row, i))field[row][i].mark();
+                if(!checker(row, i) && isfree(row, i))field[row][i].mark();
             }
         }    
     }
     for(int i = 0; i < ROWS; i++){
         if(field[i][col].get_char() == target && !field[row][col].ismarked() && !field[i][col].ismarked() && i != row){
-            if(!checker(row, col))field[row][col].mark();
+            if(!checker(row, col) && isfree(row, col))field[row][col].mark();
             else{
-                if(!checker(i, col))field[i][col].mark();
+                if(!checker(i, col) && isfree(i, col))field[i][col].mark();
             }
         }
     }
