@@ -63,10 +63,11 @@ int main() {
         cout << setw(30) << " " << "5. Enter manually and solve manually\n";
         cout << setw(30) << " " << "6. Solve manually example\n";
         cout << setw(30) << " " << "7. Generate and solve the correct random field\n";
-        cout << setw(30) << " " << "8. Exit\n";
+        cout << setw(30) << " " << "8. Rules\n";
+        cout << setw(30) << " " << "9. Exit\n";
         cout << setw(30) << " " << "Enter your choice: ";
 
-        if(!get_choice(choice, 8)){
+        if(!get_choice(choice, 9)){
             continue;
         }
         else{
@@ -176,10 +177,20 @@ int main() {
                     continue;
                 }
                 case 8:{
-                    cout << "Exiting...";
+                    clear_console();
+                    cin.ignore(9999999, '\n');
+                    cout << "You need to fill in some cells so that there are no repeated letters in each row or column.\n" 
+                         << "The filled cells must not touch each other. \n"
+                         << "All the unfilled cells must be connected to each other by their sides horizontally or vertically\n"
+                         << "so that a single continuous space of unfilled cells is formed.\n";
+                    pause();
+                    clear_console();
+                    continue;
+                }
+                case 9:{
+                    cout << "Exiting...\n";
                     break;
                 }
-
             }
             break;
         }
