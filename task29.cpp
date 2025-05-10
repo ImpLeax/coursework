@@ -78,16 +78,72 @@ int main() {
                     continue;
                 }
                 case 3:{
-                    break;
+                    clear_console();
+                    cout << "Good luck entering 100 cells :)\n";
+                    cin.ignore(9999999, '\n');
+                    pause();
+                    clear_console();
+                    cout << "Initial field: \n";
+                    game.set_field();
+                    game.show();
+                    game.set_field(nullptr, true);
+                    if(game.solve(false)){
+                        clear_console();
+                        game.show();
+                    }else{
+                        clear_console();
+                        cout << "Your field cannot be solved!\n";
+                        game.show();
+                    }
+                    continue;
                 }
                 case 4:{
-                    break;
+                    clear_console();
+                    cout << "Good luck entering 100 cells :)\n";
+                    cin.ignore(9999999, '\n');
+                    pause();
+                    clear_console();
+                    cout << "Initial field: \n";
+                    game.set_field();
+                    game.show();
+                    game.set_field(nullptr, true);
+                    if(game.solve(true)){
+                        clear_console();
+                        game.show();
+                    }else{
+                        clear_console();
+                        cout << "Your field cannot be solved!\n";
+                        game.show();
+                    }
+                    continue;
                 }
                 case 5:{
-                    break;
+                    clear_console();
+                    cout << "Good luck entering 100 cells :)\n";
+                    cin.ignore(9999999, '\n');
+                    pause();
+                    clear_console();
+                    cout << "Initial field: \n";
+                    game.set_field();
+                    game.show();
+                    game.set_field(nullptr, true);
+                    clear_console();
+                    game.show();
+                    game.solve(false, true);
+                    clear_console();
+                    game.show();
+                    continue;
                 }
                 case 6:{
-                    break;
+                    clear_console();
+                    cout << "Initial field: \n";
+                    game.set_field(example);
+                    game.show();
+                    cin.ignore(9999999, '\n');
+                    game.solve(false, true);
+                    clear_console();
+                    game.show();
+                    continue;
                 }
                 case 7:{
                     cout << "\nExiting ... \n";
@@ -96,8 +152,7 @@ int main() {
             }
             break;
         }
-        
-
+    
     }
 
     return 0;

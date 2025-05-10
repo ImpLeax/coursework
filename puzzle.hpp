@@ -28,9 +28,9 @@ public:
     puzzle(cell fld[][COLS]);
     ~puzzle();
 
-    void set_field(cell fld[][COLS] = nullptr);
+    void set_field(cell fld[][COLS] = nullptr, bool manualy=false);
     void generate();
-    void solve(bool step_by_step);
+    bool solve(bool step_by_step=false, bool solve_manualy=false);
     void show();
 };
 

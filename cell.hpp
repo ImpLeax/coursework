@@ -9,7 +9,7 @@ class cell {
 public:
     cell(char character = '0');
 
-    void set_char(char c);
+    bool set_char(char c);
     void set_random();
 
     void set_marked();    

@@ -17,11 +17,12 @@ cell::cell(char character) {
     error = false;
 }
 
-void cell::set_char(char c) {
+bool cell::set_char(char c) {
     if (c < 65 || c > 90) {
-        return;
+        return false;
     }
     value[1] = c;
+    return true;
 }
 
 void cell::set_random() {

@@ -2,6 +2,8 @@
 #include<set>
 #include <iomanip>
 #include <queue>
+#include <sstream>
+#include <string>
 #include"cell.hpp"
 #include"puzzle.hpp"
 #include"handlers.hpp"
@@ -29,7 +31,7 @@ puzzle::puzzle(cell fld[][COLS]) {
 puzzle::~puzzle() {
 }
 
-void puzzle::set_field(cell fld[][COLS]){
+void puzzle::set_field(cell fld[][COLS], bool manualy){
     problems = 0;
     is_connected = false;
     if(fld == nullptr){
@@ -46,7 +48,37 @@ void puzzle::set_field(cell fld[][COLS]){
             }
         }
     }
+
+    if(manualy){
+        int a, b;
+        char ch;
+        string input;
+
+        while (true) {
+            cout << "Enter a cell row and column and a letter (example: 0 0 A), or 'q' to finish: ";
+            getline(cin, input);
+
+            if (input == "q") {
+                break;
+            }
+
+            stringstream ss(input);
+            if (ss >> a >> b >> ch && (ch >= 'A' && ch <= 'Z')) {
+                if (a >= 0 && a < 10 && b >= 0 && b < 10) {
+                    field[a][b].set_char(ch);
+                    clear_console();
+                    show();
+                } else {
+                    cout << "Cell position out of bounds!\n";
+                }
+            } else {
+                cout << "Invalid input! Try again.\n";
+            }
+        }
+    }
 }
+
+
 
 bool puzzle::solve_backtrack(bool step_by_step) {
     if (!has_conflicts()) {
@@ -318,10 +350,47 @@ void puzzle::generate() {
     }
 }
 
-void puzzle::solve(bool step_by_step) {
-    solve_backtrack(step_by_step);
-    problem_counter();
-    is_connected = check_connected();
+bool puzzle::solve(bool step_by_step, bool solve_manualy) {
+    if(solve_manualy){
+        int a, b;
+        string input;
+
+        while (true) {
+            cout << "Enter a cell row and column to mark or unmark (example: 0 0), or 'q' to finish: ";
+            getline(cin, input);
+
+            if (input == "q") {
+                break;
+            }
+
+            stringstream ss(input);
+            if (ss >> a >> b) {
+                if (a >= 0 && a < 10 && b >= 0 && b < 10) {
+                    if(!field[a][b].is_marked()){
+                        field[a][b].set_marked();
+                        clear_console();
+                        show();
+                    }else{
+                        field[a][b].unset_marked();
+                        clear_console();
+                        show();
+                    }
+                } else {
+                    cout << "Cell position out of bounds!\n";
+                }
+            } else {
+                cout << "Invalid input! Try again.\n";
+            }
+        }
+        problem_counter();
+        is_connected = check_connected();
+    }else{
+        bool is_solved = solve_backtrack(step_by_step);
+        problem_counter();
+        is_connected = check_connected();
+        return is_solved;
+    }
+    return false;
 }
 
 void puzzle::show() {
