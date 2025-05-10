@@ -13,11 +13,27 @@
 
 using namespace std;
 
+
+/*  ---------------------------------------------------------------------[<]-
+    Constructor: puzzle
+    Synopsis: Initializes the variables for errors and connectivity and 
+    the field with empty cells.
+ ---------------------------------------------------------------------[>]-*/
 puzzle::puzzle() {
     problems = 0;
     is_connected = false;
+    for (int i = 0; i < ROWS; i++) {
+        for (int j = 0; j < COLS; j++) {
+            field[i][j] = cell();
+    }
+  }
 }
 
+/*  ---------------------------------------------------------------------[<]-
+    Constructor: puzzle
+    Synopsis: Initializes the variables for errors and connectivity and 
+    initializes the field with the passed completed field.
+ ---------------------------------------------------------------------[>]-*/
 puzzle::puzzle(cell fld[][COLS]) {
     problems = 0;
     is_connected = false;
@@ -28,9 +44,19 @@ puzzle::puzzle(cell fld[][COLS]) {
     }
 }
 
+/*  ---------------------------------------------------------------------[<]-
+    Destructor: puzzle
+ ---------------------------------------------------------------------[>]-*/
 puzzle::~puzzle() {
 }
 
+/*  ---------------------------------------------------------------------[<]-
+    Method: set_field
+    Synopsis: Fills the field in different modes:
+              1)fills the field with zeros
+              2) fills the field with a ready-made field
+              3) fills the field manually
+ ---------------------------------------------------------------------[>]-*/
 void puzzle::set_field(cell fld[][COLS], bool manualy){
     problems = 0;
     is_connected = false;
@@ -79,7 +105,21 @@ void puzzle::set_field(cell fld[][COLS], bool manualy){
 }
 
 
-
+/*  ---------------------------------------------------------------------[<]-
+    Method: solve_backtrack
+    Synopsis: Recursive backtracking algorithm 
+              that attempts to solve the puzzle by finding unmarked pairs 
+              of identical characters in rows and columns. 
+              For each valid pair, it marks one cell, checks connectivity 
+              and constraints, and recursively proceeds. 
+              If the constraints fail or no solution is found deeper in 
+              recursion, it unmarks the cell and tries the other cell of 
+              the pair. 
+              If no valid pair leads to a solution, the function 
+              backtracks. 
+              Also supports a step-by-step mode that shows the current 
+              state at each decision point, which may require many steps.
+ ---------------------------------------------------------------------[>]-*/
 bool puzzle::solve_backtrack(bool step_by_step) {
     if (!has_conflicts()) {
         return true;
@@ -187,6 +227,16 @@ bool puzzle::solve_backtrack(bool step_by_step) {
     return false;
 }
 
+/*  ---------------------------------------------------------------------[<]-
+    Method: check_connected
+    Synopsis: Looks for the first unmarked cell to start the traversal 
+              from there.
+              Then it checks whether all other unmarked cells are 
+              reachable by the width 
+              traversal (i.e., the cellularity check).
+              If at least one unmarked cell is not reachable,
+              it returns false.
+ ---------------------------------------------------------------------[>]-*/
 bool puzzle::check_connected() {
     bool visited[ROWS][COLS] = {false};
     queue<pair<int, int>> q;
@@ -237,6 +287,14 @@ bool puzzle::check_connected() {
     return true;
 }
 
+/*  ---------------------------------------------------------------------[<]-
+    Method: problem_counter
+    Synopsis: Goes through the field and marks problem cells, that is, 
+              if there are cells that are repeated in a row or column 
+              and one of them is not marked, 
+              that is, does not meet the condition, then marks it as 
+              problematic.
+ ---------------------------------------------------------------------[>]-*/
 void puzzle::problem_counter() {
     problems = 0;
     problem_indexes.clear();
@@ -271,6 +329,12 @@ void puzzle::problem_counter() {
     problems = problem_indexes.size();
 }
 
+/*  ---------------------------------------------------------------------[<]-
+    Method: has_conflicts
+    Synopsis: Returns true if there are no problem cells, i.e. 
+              no duplicates in a row or column and one of them is labeled, 
+              and false if there are problems.
+ ---------------------------------------------------------------------[>]-*/
 bool puzzle::has_conflicts() {
     for (int i = 0; i < ROWS; i++) {
         for (int j = 0; j < COLS; j++) {
@@ -293,6 +357,12 @@ bool puzzle::has_conflicts() {
     return false;
 }
 
+/*  ---------------------------------------------------------------------[<]-
+    Method: is_free
+    Synopsis: Checks if there is space in neighboring cells to avoid 
+              blocking them with a marked cell and thus violating the 
+              conditions.
+ ---------------------------------------------------------------------[>]-*/
 bool puzzle::is_free(int row, int col) {
     if (row > 0 && free_counter(row - 1, col) < 2) {
         return false;
@@ -309,6 +379,11 @@ bool puzzle::is_free(int row, int col) {
     return true;
 }
 
+/*  ---------------------------------------------------------------------[<]-
+    Method: free_counter
+    Synopsis: Determines the number of unlabeled neighbors, 
+              i.e. free spaces.
+ ---------------------------------------------------------------------[>]-*/
 int puzzle::free_counter(int row, int col) {
     int counter = 0;
     if (row > 0 && !field[row - 1][col].is_marked()) {
@@ -326,6 +401,11 @@ int puzzle::free_counter(int row, int col) {
     return counter;
 }
 
+/*  ---------------------------------------------------------------------[<]-
+    Method: checker
+    Synopsis: Checks if adjacent cells are labeled 
+              (method for labeled cells to avoid violating the condition).
+ ---------------------------------------------------------------------[>]-*/
 bool puzzle::checker(int row, int col) {
     if (row > 0 && field[row - 1][col].is_marked()) {
         return true;
@@ -342,6 +422,10 @@ bool puzzle::checker(int row, int col) {
     return false;
 }
 
+/*  ---------------------------------------------------------------------[<]-
+    Method: generate
+    Synopsis: Generates a random field.
+ ---------------------------------------------------------------------[>]-*/
 void puzzle::generate() {
     for (int i = 0; i < ROWS; i++) {
         for (int j = 0; j < COLS; j++) {
@@ -350,6 +434,12 @@ void puzzle::generate() {
     }
 }
 
+/*  ---------------------------------------------------------------------[<]-
+    Method: solve
+    Synopsis: A generalized method that solves the field, counts errors, 
+              and determines connectivity. 
+              Also supports manual input mode.
+ ---------------------------------------------------------------------[>]-*/
 bool puzzle::solve(bool step_by_step, bool solve_manualy) {
     if(solve_manualy){
         int a, b;
@@ -393,6 +483,10 @@ bool puzzle::solve(bool step_by_step, bool solve_manualy) {
     return false;
 }
 
+/*  ---------------------------------------------------------------------[<]-
+    Method: show
+    Synopsis: Method for printing a field.
+ ---------------------------------------------------------------------[>]-*/
 void puzzle::show() {
     cout << " ";
     for (int i = 0; i < COLS; i++) cout << setw(6) << i;

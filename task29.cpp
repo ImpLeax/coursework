@@ -1,8 +1,24 @@
+/*  ----------------------------------------------------------------<Header>-
+    Name:       task29.cpp
+    Title:      Letter grid puzzle solver
+
+    Group:      TV-42
+    Student:    Bondarchuk V. V.
+    Written:    2025-05-10
+    Revised:    2025-05-10
+
+    Description: Write a program that shades some cells so that there are no repeating numbers in any row or column
+                 there are no duplicate letters in any row or column. The shaded cells should not
+                 be in contact with each other. All non-filled cells must
+                 be connected to each other by sides horizontally or vertically
+                 horizontally or vertically to form a single continuous space of
+                 of unpainted cells.
+ ------------------------------------------------------------------</Header>-*/
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
 #include <iomanip>
-#ifdef _WIN32
+#ifdef _WIN32        //conditional construct for connecting a library that is supported for windows
 #include <windows.h>
 #endif
 #include"cell.hpp"
@@ -16,13 +32,14 @@ using namespace std;
 
 int main() {
     #ifdef _WIN32
-        SetConsoleOutputCP(65001);     
+        SetConsoleOutputCP(65001);    //a function to change the output encoding in the Windows console to UTF-8 (required for the correct output of the field) 
     #endif
     srand(time(0));
     clear_console();
 
     puzzle game;
 
+    //given field
     cell example[ROWS][COLS] = {
         {cell('K'), cell('O'), cell('P'), cell('R'), cell('I'), cell('V'), cell('N'), cell('I'), cell('C'), cell('A')},
         {cell('R'), cell('L'), cell('O'), cell('D'), cell('S'), cell('M'), cell('P'), cell('T'), cell('M'), cell('I')},
@@ -35,6 +52,7 @@ int main() {
         {cell('V'), cell('L'), cell('D'), cell('S'), cell('M'), cell('J'), cell('K'), cell('F'), cell('B'), cell('J')},
         {cell('W'), cell('P'), cell('C'), cell('C'), cell('R'), cell('O'), cell('A'), cell('T'), cell('I'), cell('A')}
     };
+    //menu implementation
     while(true){
         int choice = -1;
         cout << setw(30) << " " << "====== MENU ======\n";
@@ -44,10 +62,11 @@ int main() {
         cout << setw(30) << " " << "4. Enter manually and solve programmatically whith step by step\n";
         cout << setw(30) << " " << "5. Enter manually and solve manually\n";
         cout << setw(30) << " " << "6. Solve manually example\n";
-        cout << setw(30) << " " << "7. Exit\n";
+        cout << setw(30) << " " << "7. Generate and solve the correct random field\n";
+        cout << setw(30) << " " << "8. Exit\n";
         cout << setw(30) << " " << "Enter your choice: ";
 
-        if(!get_choice(choice, 7)){
+        if(!get_choice(choice, 8)){
             continue;
         }
         else{
@@ -146,9 +165,21 @@ int main() {
                     continue;
                 }
                 case 7:{
-                    cout << "\nExiting ... \n";
+                    clear_console();
+                    cout << "Solved random field:\n";
+                    game.generate();
+                    while(true){
+                        if(game.solve())break;
+                        game.generate();
+                    }
+                    game.show();
+                    continue;
+                }
+                case 8:{
+                    cout << "Exiting...";
                     break;
                 }
+
             }
             break;
         }

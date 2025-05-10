@@ -1,6 +1,10 @@
 #ifndef CELL_HPP
 #define CELL_HPP
 
+/*  ---------------------------------------------------------------------[<]-
+    Class: cell
+    Synopsis: Describes the cell object in the field
+ ---------------------------------------------------------------------[>]-*/
 class cell {
     char value[4];
     bool marked;

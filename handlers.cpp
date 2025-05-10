@@ -4,6 +4,11 @@
 
 using namespace std;
 
+
+/*  ---------------------------------------------------------------------[<]-
+    Function: clear_console
+    Synopsis: Cleans the console for both Windows and Linux.
+ ---------------------------------------------------------------------[>]-*/
 void clear_console() {
     #ifdef _WIN32
         system("cls");  
@@ -12,6 +17,10 @@ void clear_console() {
     #endif
 }
 
+/*  ---------------------------------------------------------------------[<]-
+    Function: get_choice
+    Synopsis: Menu helper function reads the selection and checks for correct input.
+ ---------------------------------------------------------------------[>]-*/
 bool get_choice(int &choice, int choices){
     cin >> choice;
     if(cin.fail()){
@@ -31,6 +40,10 @@ bool get_choice(int &choice, int choices){
     }
 }
 
+/*  ---------------------------------------------------------------------[<]-
+    Function: pause
+    Synopsis: Suspends the program until you enter “Enter” or “q” to exit.
+ ---------------------------------------------------------------------[>]-*/
 void pause(){
     cout << "\nPress Enter to continue or 'q' to exit..." << endl;
     char ch;
